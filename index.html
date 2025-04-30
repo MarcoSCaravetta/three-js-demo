@@ -42,12 +42,6 @@
         });
     }
 
-    // const model;
-    // loader.load('https://raw.githubusercontent.com/MarcoSCaravetta/cv-game-website-materials/main/objects/player.glb', function (gltf){
-    //     const model = gltf.scene;
-    //     scene.add(model)
-    //     model.position.set(0, -0.75, 0);
-    // })
     const player = await loadModel('https://raw.githubusercontent.com/MarcoSCaravetta/cv-game-website-materials/main/objects/player.glb');
     player.scene.position.set(0, 0, 0);
     scene.add(player.scene);
@@ -66,10 +60,8 @@
     function animate() {
         requestAnimationFrame(animate)
         renderer.render(scene, camera)
-        // cylinder.rotation.x += 0.1
-        // cylinder.rotation.y += 0.1
         player.scene.rotation.x += 0.01
-        // model.rotation.y += 0.01
+        player.scene.rotation.y += 0.01
     }
 
     animate()
