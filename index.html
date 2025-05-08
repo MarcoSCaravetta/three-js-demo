@@ -29,40 +29,76 @@
     )
 
     const renderer = new THREE.WebGLRenderer()
+    renderer.shadowMap.enabled = true;
     renderer.setSize(window.innerWidth, window.innerHeight)
     document.body.appendChild(renderer.domElement)
 
     const controls = new OrbitControls(camera, renderer.domElement)
 
-    const loader = new GLTFLoader();
-
-    function loadModel(url){
-        return new Promise((onLoad) => {
-            loader.load(url,onLoad);
-        });
+    class ObjectScene extends THREE.Scene{
+        constructor(parent) {
+            super();
+            Object.assign(this, parent) //#TODO make deep copy
+            this.width;
+            this.height;
+            this.depth;
+        }
     }
 
-    const player = await loadModel('https://raw.githubusercontent.com/MarcoSCaravetta/cv-game-website-materials/main/objects/player.glb');
-    player.scene.position.set(0, 0, 0);
-    scene.add(player.scene);
+    const loader = new GLTFLoader();
 
-    const geometry = new THREE.CylinderGeometry(0.25, 0.25, 1.5, 32)
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-    const cylinder = new THREE.Mesh(geometry, material)
-    scene.add(cylinder)
-    cylinder.position.set(1, 0, 0);
+    async function loadModel(url){
+        const glb = await loader.loadAsync(url);
+        return glb.scene;
+    };
 
-    const light = new THREE.AmbientLight( 0xA0A0A0 );
-    scene.add( light );
+    const player = new ObjectScene(
+        await loadModel('https://raw.githubusercontent.com/MarcoSCaravetta/cv-game-website-materials/main/objects/player.glb')
+    );
+    player.position.set(0, 0, 0);
+    player.traverse(function(node) {
+        if(node.isMesh)
+            node.castShadow = true;
+    })
+    scene.add(player);
+
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(0, 3, 2);
+    light.castShadow = true;
+    scene.add(light);
+    const ambient_light = new THREE.AmbientLight(0xA0A0A0);
+    //scene.add(ambient_light)
+
+    // const cylinder = new THREE.Mesh(
+    //     new THREE.CylinderGeometry(0.25, 0.25, 1.5, 32), 
+    //     new THREE.MeshStandardMaterial({color: 0x00ff00})
+    // );
+    // cylinder.position.set(1, 0, 0);
+    // cylinder.castShadow = true;
+    // scene.add(cylinder)
+
+    const ground = new THREE.Mesh(
+        new THREE.BoxGeometry(5, 0.5, 10),
+        new THREE.MeshStandardMaterial({color: 0x0000ff})
+    );
+    ground.position.y = -2;
+    ground.receiveShadow = true;
+    scene.add(ground)
+
     camera.position.z = 5
     camera.lookAt(scene.position);
+
+    // console.log(player.scene.height)
 
     function animate() {
         requestAnimationFrame(animate)
         renderer.render(scene, camera)
-        player.scene.rotation.x += 0.01
-        player.scene.rotation.y += 0.01
+        // if player.scene <=
+        //     player.position.y += -0.01;
+        // player.rotation.x += 0.01
+        // player.rotation.y += 0.01
     }
 
+    // #TODO use delta time in frame animation for consistenet movement
     animate()
 </script>
