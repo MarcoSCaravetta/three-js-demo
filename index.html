@@ -36,14 +36,14 @@
     const controls = new OrbitControls(camera, renderer.domElement)
 
     class ObjectScene extends THREE.Scene{
-        constructor(sourceScene = null) {
+        constructor({sourceScene = null, width = 0, height = 0, depth = 0}) {
             super();
             if(sourceScene) {
                 this.copyState(sourceScene)
             }
-            this.width;
-            this.height;
-            this.depth;
+            this.width = width;
+            this.height = height;
+            this.depth = depth;
         }
 
         copyState(sourceScene) {
@@ -67,9 +67,12 @@
         return glb.scene;
     };
 
-    const player = new ObjectScene(
-        await loadModel('https://raw.githubusercontent.com/MarcoSCaravetta/cv-game-website-materials/main/objects/player.glb')
-    );
+    const player = new ObjectScene({
+        sourceScene: await loadModel('https://raw.githubusercontent.com/MarcoSCaravetta/cv-game-website-materials/main/objects/player.glb'),
+        width: 0.3,
+        height: 1.52,
+        depth: 0.3,
+    });
     player.position.set(0, 0, 0);
     player.traverse(function(node) {
         if(node.isMesh)
@@ -103,7 +106,7 @@
     camera.position.z = 5
     camera.lookAt(scene.position);
 
-    console.log(player)
+    console.log(player.height) // #TODO for debug only
 
     function animate() {
         requestAnimationFrame(animate)
