@@ -36,12 +36,27 @@
     const controls = new OrbitControls(camera, renderer.domElement)
 
     class ObjectScene extends THREE.Scene{
-        constructor(parent) {
+        constructor(sourceScene = null) {
             super();
-            Object.assign(this, parent) //#TODO make deep copy
+            if(sourceScene) {
+                this.copyState(sourceScene)
+            }
             this.width;
             this.height;
             this.depth;
+        }
+
+        copyState(sourceScene) {
+            this.matrixAutoUpdate = sourceScene.matrixAutoUpdate;
+            this.up.copy(sourceScene.up);
+            this.background = sourceScene.background;
+            this.environment = sourceScene.environment;
+            this.fog = sourceScene.fog;
+            this.overrideMaterial = sourceScene.overrideMaterial;
+
+            sourceScene.children.forEach(child => {
+                this.add(child.clone());
+            });
         }
     }
 
@@ -88,7 +103,7 @@
     camera.position.z = 5
     camera.lookAt(scene.position);
 
-    // console.log(player.scene.height)
+    console.log(player)
 
     function animate() {
         requestAnimationFrame(animate)
