@@ -69,6 +69,8 @@
             // use physics engine and vectors for positioning and bounding box. Or use THREE.Box3 bounding box.
             this.bottom = this.position.y - this.height/2;
 
+            this.position.x += this.velocity.x
+            this.position.z += this.velocity.z
             this.applyGravity(ground);
 
 
@@ -79,7 +81,7 @@
             this.velocity.y += this.gravity;
 
             if (this.bottom + this.velocity.y <= ground.top) {
-                this.velocity.y *= 0.3;
+                this.velocity.y *= 0.20;
                 this.velocity.y = -this.velocity.y;
             }
             else this.position.y += this.velocity.y;
@@ -161,6 +163,72 @@
     ground.update();
     console.log(player.bottom) // #TODO for debug only
     console.log(ground.top)
+
+    window.addEventListener('keydown', (event) => {
+        // #TODO with respect to camera for first person type views
+        switch(event.code){
+            case 'KeyW':
+                player.velocity.z = -0.016;
+                break;
+            case 'KeyS':
+                player.velocity.z = +0.016;
+                break;
+            case 'KeyA':
+                player.velocity.x = -0.016;
+                break;
+            case 'KeyD':
+                player.velocity.x = +0.016;
+                break;
+            case 'Space':
+                if (Math.abs(player.bottom - ground.top) < 0.005)
+                    player.velocity.y = +0.08;
+                break;
+        }
+    });
+
+    window.addEventListener('keyup', (event) => {
+        // #TODO better solution for moving while key is pressed
+        switch(event.code){
+            case 'KeyW':
+                if (player.velocity.z < 0)
+                    player.velocity.z = 0;
+                break;
+            case 'KeyS':
+                if (player.velocity.z > 0)
+                    player.velocity.z = 0;
+                break;
+            case 'KeyA':
+                if (player.velocity.x < 0)
+                    player.velocity.x = 0;
+                break;
+            case 'KeyD':
+                if (player.velocity.x > 0)
+                    player.velocity.x = 0;
+                break;
+        }
+    });
+
+    window.addEventListener('mousedown', (event) => {
+        switch(event.button){
+            case 0:
+                console.log('left click down');
+                break;
+            case 2:
+                console.log('right click down');
+                break;
+        }
+    });
+
+    window.addEventListener('mouseup', (event) => {
+        switch(event.button){
+            case 0:
+                console.log('left click up');
+                break;
+            case 2:
+                console.log('right click up');
+                break;
+        }
+    });
 
     function animate() {
         requestAnimationFrame(animate)
