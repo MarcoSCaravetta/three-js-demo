@@ -168,16 +168,20 @@
         // #TODO with respect to camera for first person type views
         switch(event.code){
             case 'KeyW':
-                player.velocity.z = -0.016;
+                keys.w.pressed = true;
+                // player.velocity.z = -0.016;
                 break;
             case 'KeyS':
-                player.velocity.z = +0.016;
+                keys.s.pressed = true;
+                // player.velocity.z = +0.016;
                 break;
             case 'KeyA':
-                player.velocity.x = -0.016;
+                keys.a.pressed = true;
+                // player.velocity.x = -0.016;
                 break;
             case 'KeyD':
-                player.velocity.x = +0.016;
+                keys.d.pressed = true;
+                // player.velocity.x = +0.016;
                 break;
             case 'Space':
                 if (Math.abs(player.bottom - ground.top) < 0.005)
@@ -190,20 +194,24 @@
         // #TODO better solution for moving while key is pressed
         switch(event.code){
             case 'KeyW':
-                if (player.velocity.z < 0)
-                    player.velocity.z = 0;
+                keys.w.pressed = false;
+                // if (player.velocity.z < 0)
+                //     player.velocity.z = 0;
                 break;
             case 'KeyS':
-                if (player.velocity.z > 0)
-                    player.velocity.z = 0;
+                keys.s.pressed = false;
+                // if (player.velocity.z > 0)
+                //     player.velocity.z = 0;
                 break;
             case 'KeyA':
-                if (player.velocity.x < 0)
-                    player.velocity.x = 0;
+                keys.a.pressed = false;
+                // if (player.velocity.x < 0)
+                //     player.velocity.x = 0;
                 break;
             case 'KeyD':
-                if (player.velocity.x > 0)
-                    player.velocity.x = 0;
+                keys.d.pressed = false;
+                // if (player.velocity.x > 0)
+                //     player.velocity.x = 0;
                 break;
         }
     });
@@ -230,6 +238,20 @@
         }
     });
 
+    const keys = {
+        w: {
+            pressed: false
+        },
+        s: {
+            pressed: false
+        },
+        a: {
+            pressed: false
+        },
+        d: {
+            pressed: false
+        },
+    };
     function animate() {
         requestAnimationFrame(animate)
         renderer.render(scene, camera)
